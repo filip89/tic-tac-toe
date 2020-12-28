@@ -13,13 +13,13 @@ export default class Game {
     }
 
     reset() {
-        clearTimeout(this.comMoveTimeoutId);
+        if (this.comMoveTimeoutId) clearTimeout(this.comMoveTimeoutId);
         this.resetBoardElements();
         this.setFreshGameData();
     }
 
     resetBoardElements() {
-        Array.from(this.boardDiv.querySelectorAll('.game__field')).forEach((fieldElem) => {
+        Array.from(this.boardDiv.querySelectorAll('.board__field')).forEach((fieldElem) => {
             fieldElem.innerText = '';
         });
     }
@@ -65,7 +65,7 @@ export default class Game {
     }
 
     markField(fieldElement, sign) {
-        this.boardData[fieldElement.id] = sign;
+        this.boardData[fieldElement.dataset.field] = sign;
         fieldElement.innerText = sign;
     }
 }
