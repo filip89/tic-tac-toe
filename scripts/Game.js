@@ -32,21 +32,18 @@ export default class Game {
     onPlayerAction({ target }) {
         if (!this.isPlayerTurn || target.innerText) return;
         this.markField(target, playerSign);
-        this.onTurnFinish();
     }
 
     comPlay() {
         let fieldId = 4;
         this.comMoveTimeoutId = setTimeout(() => this.comMarkField(fieldId), comDelay);
-        this.boardData[fieldId] = comSign;
     }
 
     comMarkField(fieldId) {
-        this.boardDiv.querySelector('#field_' + fieldId).innerText = comSign;
-        this.onTurnFinish();
+        this.markField(this.boardDiv.querySelector('#field_' + fieldId), comSign);
     }
 
-    onTurnFinish() {
+    finishTurn() {
         this.checkIfEnd();
         this.nextTurn();
     }
@@ -67,5 +64,6 @@ export default class Game {
     markField(fieldElement, sign) {
         this.boardData[fieldElement.dataset.field] = sign;
         fieldElement.innerText = sign;
+        this.finishTurn();
     }
 }
