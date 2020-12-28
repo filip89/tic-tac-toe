@@ -1,32 +1,24 @@
 import { playerSign, comSign, comDelay } from './settings.js';
 
 export default class Game {
-    boardDiv;
-    boardData;
-    isPlayerTurn;
-    comMoveTimeoutId;
-
-    constructor() {
-        this.boardDiv = document.querySelector('.board');
-        this.boardDiv.addEventListener('mouseup', (event) => this.onPlayerAction(event));
-        this.setFreshGameData();
+    constructor(ai, boardElem) {
+        this.boardElem = boardElem;
+        this.ai = ai;
+        this.boardElem.addEventListener('mouseup', (event) => this.onPlayerAction(event));
+        this.isPlayerTurn = true;
     }
 
     reset() {
         if (this.comMoveTimeoutId) clearTimeout(this.comMoveTimeoutId);
         this.resetBoardElements();
-        this.setFreshGameData();
+        this.ai.setFreshBoardState();
+        this.isPlayerTurn = true;
     }
 
     resetBoardElements() {
-        Array.from(this.boardDiv.querySelectorAll('.board__field')).forEach((fieldElem) => {
+        Array.from(this.boardElem.querySelectorAll('.board__field')).forEach((fieldElem) => {
             fieldElem.innerText = '';
         });
-    }
-
-    setFreshGameData() {
-        this.boardData = [null, null, null, null, null, null, null, null, null];
-        this.isPlayerTurn = true;
     }
 
     onPlayerAction({ target }) {
@@ -35,12 +27,12 @@ export default class Game {
     }
 
     comPlay() {
-        let fieldId = 4;
-        this.comMoveTimeoutId = setTimeout(() => this.comMarkField(fieldId), comDelay);
+        let fieldToMark = 4;
+        this.comMoveTimeoutId = setTimeout(() => this.comMarkField(fieldToMark), comDelay);
     }
 
     comMarkField(fieldId) {
-        this.markField(this.boardDiv.querySelector('#field_' + fieldId), comSign);
+        this.markField(this.boardElem.querySelector('#field_' + fieldId), comSign);
     }
 
     finishTurn() {
@@ -62,7 +54,6 @@ export default class Game {
     }
 
     markField(fieldElement, sign) {
-        this.boardData[fieldElement.dataset.field] = sign;
         fieldElement.innerText = sign;
         this.finishTurn();
     }
