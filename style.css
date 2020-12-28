@@ -1,0 +1,24 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --field-size: 40px;
+}
+
+.board {
+    margin: 100px auto;
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(var(--field-size) * 3);
+    cursor: pointer;
+    user-select: none;
+}
+
+.board__field {
+    width: var(--field-size);
+    height: var(--field-size);
+    line-height: var(--field-size);
+    text-align: center;
+    border: 1px solid black;
+}
