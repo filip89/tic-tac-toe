@@ -1,6 +1,6 @@
 var _a;
-import AI from './scripts/AI.js';
-import Game from './scripts/Game.js';
+import AI from './components/AI.js';
+import Game from './components/Game.js';
 const boardElem = document.querySelector('.board');
 const ai = new AI();
 const game = new Game(ai, boardElem);

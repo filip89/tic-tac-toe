@@ -1,5 +1,5 @@
-import AI from './scripts/AI.js';
-import Game from './scripts/Game.js';
+import AI from './components/AI.js';
+import Game from './components/Game.js';
 
 const boardElem: HTMLElement = document.querySelector('.board') as HTMLElement;
 const ai: AI = new AI();

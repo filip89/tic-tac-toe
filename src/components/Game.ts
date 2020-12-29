@@ -1,5 +1,5 @@
 import AI from './AI.js';
-import { playerSign, comSign, comDelay } from './settings.js';
+import { playerSign, comSign, comDelay } from '../settings.js';
 
 export default class Game {
     private boardElem: HTMLElement;
