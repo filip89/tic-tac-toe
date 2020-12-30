@@ -27,6 +27,10 @@ export default class AI {
         this.boardState = solutionsTemplate.map((solutionTemplate) => new Solution(solutionTemplate));
     }
 
+    isSolvable(): boolean {
+        return !!this.boardState.find((solution) => solution.isSolvable());
+    }
+
     getResolvedSolution(): Solution | undefined {
         return this.boardState.find((solution) => solution.isResolved());
     }
@@ -42,23 +46,32 @@ export default class AI {
         if (!this.centerMarked) {
             return 4;
         }
+        let victoryFieldId = this.getVictoryField(sign);
+        if (victoryFieldId) return victoryFieldId;
+        let opponentVictoryFieldId = this.getVictoryField(opponentSign);
+        if (opponentVictoryFieldId) return opponentVictoryFieldId;
+        return this.getBestAvailableOption(sign);
+    }
+
+    private getVictoryField(sign: string): number | undefined {
+        return this.getSolvableSolutions(sign)
+            .find((solution) => solution.getEmptyFields().length == 1)
+            ?.getEmptyFields()[0].id;
+    }
+
+    private getBestAvailableOption(sign: string): number | undefined {
         let solvableSolutions = this.getSolvableSolutions(sign);
-        let setMatchSolution = solvableSolutions.find((solution) => solution.getEmptyFields().length == 1);
-        if (setMatchSolution) return setMatchSolution.getEmptyFields()[0].id;
-        let opponentSetMatchSolution = this.getSolvableSolutions(opponentSign).find(
-            (solution) => solution.getEmptyFields().length == 1
-        );
-        if (opponentSetMatchSolution) return opponentSetMatchSolution.getEmptyFields()[0].id;
         if (solvableSolutions.length) {
             solvableSolutions.sort((a, b) => (a.getEmptyFields().length < b.getEmptyFields().length ? -1 : 0));
             let emptyFields = solvableSolutions[0].getEmptyFields();
             let cornerField = emptyFields.find((field) => [0, 2, 6, 8].includes(field.id));
             return cornerField ? cornerField.id : emptyFields[0].id;
-        }
-        //never used
-        let anyMarkableSolution = this.getAnyMarkableSolution();
-        if (anyMarkableSolution) {
-            return anyMarkableSolution.getEmptyFields()[0].id;
+        } else {
+            let anyMarkableSolution = this.getAnyMarkableSolution();
+            //always true (otherwise would end)
+            if (anyMarkableSolution) {
+                return anyMarkableSolution.getEmptyFields()[0].id;
+            }
         }
     }
 
@@ -66,13 +79,9 @@ export default class AI {
         return this.boardState.find((solution) => solution.isMarkable());
     }
 
-    getSolvableSolutions(sign: string): Solution[] {
+    private getSolvableSolutions(sign: string): Solution[] {
         return this.boardState.filter((solution) => {
             return solution.isSolvableBySign(sign);
         });
-    }
-
-    isSolvable(): boolean {
-        return !!this.boardState.find((solution) => solution.isSolvable());
     }
 }
