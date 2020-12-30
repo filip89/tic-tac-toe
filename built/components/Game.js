@@ -25,18 +25,37 @@ export default class Game {
         this.markField(target, playerSign);
     }
     comPlay() {
-        let fieldToMark = 4;
-        this.comMoveTimeoutId = setTimeout(() => this.comMarkField(fieldToMark), comDelay);
+        let fieldToMark = this.ai.getNextMove(comSign, playerSign);
+        //always true
+        if (fieldToMark !== undefined) {
+            this.comMoveTimeoutId = setTimeout(() => this.comMarkField(fieldToMark), comDelay);
+        }
     }
     comMarkField(fieldId) {
         this.markField(this.boardElem.querySelector('#field_' + fieldId), comSign);
     }
     finishTurn() {
-        this.checkIfEnd();
-        this.nextTurn();
+        if (!this.checkIfEnd()) {
+            this.nextTurn();
+        }
     }
     checkIfEnd() {
+        let resolvedSolution = this.ai.getResolvedSolution();
+        if (resolvedSolution) {
+            this.triggerEnd(resolvedSolution.firstSign + ' won!');
+            return true;
+        }
+        else if (!this.ai.isSolvable()) {
+            this.triggerEnd('Draw!');
+            return true;
+        }
         return false;
+    }
+    triggerEnd(msg) {
+        setTimeout(() => {
+            alert(msg);
+            this.reset();
+        });
     }
     nextTurn() {
         if (this.isPlayerTurn) {
@@ -49,6 +68,7 @@ export default class Game {
     }
     markField(fieldElement, sign) {
         fieldElement.innerText = sign;
+        this.ai.updateBoardState(parseInt(fieldElement.dataset.field), sign);
         this.finishTurn();
     }
 }
