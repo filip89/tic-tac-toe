@@ -1,24 +1,38 @@
-* {
-    box-sizing: border-box;
+main {
+    display: table;
+    margin: 100px auto;
+    user-select: none;
 }
-
-:root {
-    --field-size: 40px;
+@media screen and (max-width: 480px) {
+    main {
+        margin: 0px auto;
+    }
 }
 
 .board {
-    margin: 100px auto;
-    display: flex;
-    flex-wrap: wrap;
-    width: calc(var(--field-size) * 3);
+    border-collapse: collapse;
+    border: none;
     cursor: pointer;
-    user-select: none;
+    border-style: hidden;
 }
 
 .board__field {
+    --field-size: 40px;
+    padding: 0px;
     width: var(--field-size);
     height: var(--field-size);
     line-height: var(--field-size);
     text-align: center;
-    border: 1px solid black;
+    border: 2px solid black;
+}
+
+.reset_button {
+    margin-top: 20px;
+    width: 100%;
+    border: 2px solid rgb(100, 100, 100);
+    padding: 5px;
+    background-color: white;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
 }
