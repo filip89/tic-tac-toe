@@ -18,13 +18,17 @@ export default class Solution {
         return this.fields.filter((field) => !field.sign);
     }
 
+    getMarkedFieldsIds(): number[] {
+        return this.fields.filter((field) => field.sign).map((field) => field.id);
+    }
+
     isSolvable(): boolean {
         return (
-            this.fields.reduce<string[]>((arr, field) => {
-                if (field.sign && !arr.includes(field.sign)) {
-                    arr.push(field.sign);
+            this.fields.reduce<string[]>((uniqueNonEmptySigns, field) => {
+                if (field.sign && !uniqueNonEmptySigns.includes(field.sign)) {
+                    uniqueNonEmptySigns.push(field.sign);
                 }
-                return arr;
+                return uniqueNonEmptySigns;
             }, []).length < 2
         );
     }

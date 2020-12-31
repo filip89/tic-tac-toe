@@ -8,12 +8,15 @@ export default class Solution {
     getEmptyFields() {
         return this.fields.filter((field) => !field.sign);
     }
+    getMarkedFieldsIds() {
+        return this.fields.filter((field) => field.sign).map((field) => field.id);
+    }
     isSolvable() {
-        return (this.fields.reduce((arr, field) => {
-            if (field.sign && !arr.includes(field.sign)) {
-                arr.push(field.sign);
+        return (this.fields.reduce((uniqueNonEmptySigns, field) => {
+            if (field.sign && !uniqueNonEmptySigns.includes(field.sign)) {
+                uniqueNonEmptySigns.push(field.sign);
             }
-            return arr;
+            return uniqueNonEmptySigns;
         }, []).length < 2);
     }
     isSolvableBySign(sign) {
