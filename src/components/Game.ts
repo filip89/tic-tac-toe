@@ -1,27 +1,32 @@
 import AI from './AI.js';
 import { playerSign, comSign, comDelay } from '../settings.js';
+import Solution from './Solution.js';
 
 export default class Game {
+    private endMsgElem: HTMLElement;
     private boardElem: HTMLElement;
     private ai: AI;
     private isPlayerTurn: boolean = true;
     private comMoveTimeoutId?: number;
 
-    constructor(ai: AI, boardElem: HTMLElement) {
+    constructor(ai: AI, boardElem: HTMLElement, endMsgElem: HTMLElement) {
         this.ai = ai;
         this.boardElem = boardElem;
+        this.endMsgElem = endMsgElem;
         this.boardElem.addEventListener('mouseup', (event) => this.onPlayerAction(event));
     }
 
     public reset(): void {
         if (this.comMoveTimeoutId) clearTimeout(this.comMoveTimeoutId);
         this.resetBoardElements();
+        this.hideEndMsg();
         this.ai.setFreshBoardState();
         this.isPlayerTurn = true;
     }
 
     private resetBoardElements(): void {
         Array.from<HTMLDivElement>(this.boardElem.querySelectorAll('.board__field')).forEach((fieldElem) => {
+            fieldElem.classList.remove('board__field--solved');
             fieldElem.innerText = '';
         });
     }
@@ -45,28 +50,40 @@ export default class Game {
     }
 
     private finishTurn(): void {
-        if (!this.checkIfEnd()) {
+        if (!this.finishGameIfEnd()) {
             this.nextTurn();
         }
     }
 
-    private checkIfEnd(): boolean {
+    private finishGameIfEnd(): boolean {
         let resolvedSolution = this.ai.getResolvedSolution();
         if (resolvedSolution) {
-            this.triggerEnd(resolvedSolution!.firstSign + ' won!');
+            this.showEndMsg(resolvedSolution!.firstSign + ' won!');
+            this.addVictoryAnimation(resolvedSolution);
             return true;
-        } else if (!this.ai.isSolvable()) {
-            this.triggerEnd('Draw!');
+        }
+        if (!this.ai.isSolvable()) {
+            this.showEndMsg('Draw!');
             return true;
         }
         return false;
     }
 
-    private triggerEnd(msg: string): void {
-        setTimeout(() => {
-            alert(msg);
-            this.reset();
+    private addVictoryAnimation(resolvedSolution: Solution): void {
+        resolvedSolution.fields.forEach((field) => {
+            (this.boardElem.querySelector('#field_' + field.id) as HTMLElement).classList.add('board__field--solved');
         });
+    }
+
+    private showEndMsg(msg: string): void {
+        this.endMsgElem.innerText = msg;
+        this.endMsgElem.style.visibility = 'visible';
+        this.endMsgElem.style.opacity = '1';
+    }
+
+    private hideEndMsg(): void {
+        this.endMsgElem.style.visibility = 'hidden';
+        this.endMsgElem.style.opacity = '0';
     }
 
     private nextTurn(): void {

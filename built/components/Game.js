@@ -1,20 +1,23 @@
 import { playerSign, comSign, comDelay } from '../settings.js';
 export default class Game {
-    constructor(ai, boardElem) {
+    constructor(ai, boardElem, endMsgElem) {
         this.isPlayerTurn = true;
         this.ai = ai;
         this.boardElem = boardElem;
+        this.endMsgElem = endMsgElem;
         this.boardElem.addEventListener('mouseup', (event) => this.onPlayerAction(event));
     }
     reset() {
         if (this.comMoveTimeoutId)
             clearTimeout(this.comMoveTimeoutId);
         this.resetBoardElements();
+        this.hideEndMsg();
         this.ai.setFreshBoardState();
         this.isPlayerTurn = true;
     }
     resetBoardElements() {
         Array.from(this.boardElem.querySelectorAll('.board__field')).forEach((fieldElem) => {
+            fieldElem.classList.remove('board__field--solved');
             fieldElem.innerText = '';
         });
     }
@@ -35,27 +38,36 @@ export default class Game {
         this.markField(this.boardElem.querySelector('#field_' + fieldId), comSign);
     }
     finishTurn() {
-        if (!this.checkIfEnd()) {
+        if (!this.finishGameIfEnd()) {
             this.nextTurn();
         }
     }
-    checkIfEnd() {
+    finishGameIfEnd() {
         let resolvedSolution = this.ai.getResolvedSolution();
         if (resolvedSolution) {
-            this.triggerEnd(resolvedSolution.firstSign + ' won!');
+            this.showEndMsg(resolvedSolution.firstSign + ' won!');
+            this.addVictoryAnimation(resolvedSolution);
             return true;
         }
-        else if (!this.ai.isSolvable()) {
-            this.triggerEnd('Draw!');
+        if (!this.ai.isSolvable()) {
+            this.showEndMsg('Draw!');
             return true;
         }
         return false;
     }
-    triggerEnd(msg) {
-        setTimeout(() => {
-            alert(msg);
-            this.reset();
+    addVictoryAnimation(resolvedSolution) {
+        resolvedSolution.fields.forEach((field) => {
+            this.boardElem.querySelector('#field_' + field.id).classList.add('board__field--solved');
         });
+    }
+    showEndMsg(msg) {
+        this.endMsgElem.innerText = msg;
+        this.endMsgElem.style.visibility = 'visible';
+        this.endMsgElem.style.opacity = '1';
+    }
+    hideEndMsg() {
+        this.endMsgElem.style.visibility = 'hidden';
+        this.endMsgElem.style.opacity = '0';
     }
     nextTurn() {
         if (this.isPlayerTurn) {

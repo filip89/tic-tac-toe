@@ -1,3 +1,8 @@
+html {
+    font-family: cursive, sans-serif;
+    background-color: cadetblue;
+}
+
 main {
     display: table;
     margin: 100px auto;
@@ -10,11 +15,11 @@ main {
 }
 
 .board {
+    margin-top: 20px;
     border-collapse: collapse;
     border: none;
     cursor: pointer;
     border-style: hidden;
-    font-family: cursive;
 }
 
 .board__field {
@@ -27,13 +32,44 @@ main {
     border: 2px solid black;
 }
 
+.board__field--solved {
+    animation: shake 1.5s infinite;
+    color: yellow;
+}
+
+@keyframes shake {
+    0% {
+        transform: rotate(0deg);
+    }
+    05% {
+        transform: rotate(45deg);
+    }
+    15% {
+        transform: rotate(-45deg);
+    }
+    20% {
+        transform: rotate(0deg);
+    }
+}
+
 .reset_button {
     margin-top: 20px;
     width: 100%;
-    border: 2px solid rgb(100, 100, 100);
+    border: 0px solid rgb(100, 100, 100);
     padding: 5px;
-    background-color: white;
+    background-color: rgb(8, 101, 104);
     font-weight: bold;
     outline: none;
     cursor: pointer;
+}
+
+.end_message {
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.end_message:before {
+    content: '\200b';
 }
