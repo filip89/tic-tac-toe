@@ -1,5 +1,6 @@
-import AI from './components/AI.js';
-import Game from './components/Game.js';
+import './style.css';
+import AI from './app/components/AI';
+import Game from './app/components/Game';
 
 const endMsgElem: HTMLElement = document.querySelector('.end_message') as HTMLElement;
 const boardElem: HTMLElement = document.querySelector('.board') as HTMLElement;

@@ -1,13 +1,13 @@
-import AI from './AI.js';
-import { playerSign, comSign, comDelay } from '../settings.js';
-import Solution from './Solution.js';
+import AI from './AI';
+import { playerSign, comSign, comDelay } from '../settings';
+import Solution from './Solution';
 
 export default class Game {
     private endMsgElem: HTMLElement;
     private boardElem: HTMLElement;
     private ai: AI;
     private isPlayerTurn: boolean = true;
-    private comMoveTimeoutId?: number;
+    private comMoveTimeoutId?: NodeJS.Timeout;
 
     constructor(ai: AI, boardElem: HTMLElement, endMsgElem: HTMLElement) {
         this.ai = ai;

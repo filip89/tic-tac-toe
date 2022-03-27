@@ -1,4 +1,4 @@
-import Solution from './Solution.js';
+import Solution from './Solution';
 
 //Ordered by priority (diagonals first)
 const solutionsTemplate = [
